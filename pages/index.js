@@ -67,10 +67,6 @@ searchBar.addEventListener("input", function() {
   // Récupération de tous les articles
   const articles = document.querySelectorAll(".recipes-container article");
 
-  // Récupération de l'élément HTML pour afficher l'erreur
-  const errorArticles = document.querySelector(".recipes-error");
-  const errorArticlesP = document.querySelector(".recipes-error-p");
-
   // Parcours des articles
   for (let i = 0; i < articles.length; i++) {
     const article = articles[i];
@@ -87,26 +83,34 @@ searchBar.addEventListener("input", function() {
     // Vérification de la longueur de la chaîne de caractères, on affiche l'article
     if (searchBar.value.length < 3) {
       article.style.display = "block";
-      errorArticles.style.display = "none";
-      errorArticlesP.style.display = "none";
      }
     // Vérification de la longueur de la chaîne de caractères ET Si le titre OU la liste des ingrédient OU un mot/nombre de la description contient la valeur de recherche, on affiche l'article en question
-    else if (searchBar.value.length >= 3 && title.includes(searchValue) || ingredients.includes(searchValue) || description.includes(searchValue)){
+    else if (searchBar.value.length >= 3 && (title.includes(searchValue) || ingredients.includes(searchValue) || description.includes(searchValue))){
       article.style.display = "block";
-      errorArticles.style.display = "none";
-      errorArticlesP.style.display = "none";
     }
     // Sinon on efface tout et on affiche l'erreur
     else {
       article.style.display = "none";
-      errorArticles.style.display = "block";
-      errorArticlesP.style.display = "flex";
     }
   }
+
+  // Récupération de l'élément HTML pour afficher l'erreur
+  const errorArticles = document.querySelector(".recipes-error");
+  const errorArticlesP = document.querySelector(".recipes-error-p");
+
+  // Vérification si au moins un article est visible
+  const anyVisibleArticle = Array.from(articles).some((article) => article.style.display !== "none"  );
+
+  // Affichage ou masquage des éléments d'erreur
+  if (anyVisibleArticle) {
+    errorArticles.style.display = "none";
+    errorArticlesP.style.display = "none";
+  } else {
+    errorArticles.style.display = "block";
+    errorArticlesP.style.display = "flex";
+  }
+
 });
-
-
-
 
 
 // Sélection des boutons et des listes de balises dans le DOM
@@ -116,6 +120,9 @@ let ustensilsBtn = document.querySelector(".ustensilsBtn");
 
 // Création d'un tableau contenant les boutons
 let buttons = [ingredientsBtn, appareilsBtn, ustensilsBtn];
+
+// Déclaration de la variable tagsZone en dehors de la boucle for
+let tagsZone = document.querySelector(".tags-zone");
 
 // Boucle pour ajouter des écouteurs d'événements de clic à chaque bouton
 for (let i = 0; i < buttons.length; i++) {
@@ -168,7 +175,6 @@ for (let i = 0; i < buttons.length; i++) {
     tagElement.className = "tag";
 
     // Ajouter la balise à la section des tags
-    let tagsZone = document.querySelector(".tags-zone");
     tagsZone.appendChild(tagElement);
 
     // Supprimer l'élément cliqué de la liste des balises
@@ -191,9 +197,32 @@ for (let i = 0; i < buttons.length; i++) {
     }
 
     clickedTag.remove(); // Supprimer l'élément du DOM
-    
+  });
+
+  // Événement de clic sur un élément de la zone des tags
+  tagsZone.addEventListener("click", function (event) {
+    const clickedTag = event.target;
+
+    // Vérification si l'élément cliqué est une balise <span> (tag)
+    if (clickedTag.tagName === "SPAN") {
+      clickedTag.remove(); // Supprimer l'élément du DOM
+    }
+
+    if (clickedTag.tagName === "LI") {
+      // Vérifier si l'élément tag cliqué est déjà présent dans tags-zone
+      const isTagSelected = tagsZone.contains(clickedTag);
+
+      if (isTagSelected) {
+        // Supprimer l'élément tag cliqué de tags-zone
+        tagsZone.removeChild(clickedTag);
+      } else {
+        // Ajouter l'élément tag cliqué à tags-zone
+        tagsZone.appendChild(clickedTag.cloneNode(true));
+      }
+    }
   });
 }
+
 
 // Tableaux pour stocker les ingrédients, les appareils et les ustensiles uniques
 let allIngredients = [];
@@ -268,7 +297,6 @@ for (let ustensil of allUstensils) {
   // Ajoutez l'élément de liste à la liste d'ingrédients
   ustensilsTagsList.appendChild(li);
 }
-
 
 // trier les listes dans les dropdowns
 
