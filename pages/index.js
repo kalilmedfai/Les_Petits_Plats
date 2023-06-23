@@ -174,53 +174,80 @@ for (let i = 0; i < buttons.length; i++) {
     tagElement.textContent = tagName;
     tagElement.className = "tag";
 
+    // Ajouter la classe spécifique en fonction de la classe de la div parente
+    if (tagsList.classList.contains("ingredientsListTags")) {
+      tagElement.classList.add("ingredientTag");
+    } else if (tagsList.classList.contains("appareilsListTags")) {
+      tagElement.classList.add("appareilTag");
+    } else if (tagsList.classList.contains("ustensilsListTags")) {
+      tagElement.classList.add("ustensilTag");
+    }
+
     // Ajouter la balise à la section des tags
     tagsZone.appendChild(tagElement);
 
-    // Supprimer l'élément cliqué de la liste des balises
-    let index = -1;
-    if (tagsList === ingredientsTagsList) {
-      index = allIngredients.indexOf(tagName);
-      if (index !== -1) {
-        allIngredients.splice(index, 1); // Supprimer l'élément de la liste
-      }
-    } else if (tagsList === appareilsTagsList) {
-      index = allAppliances.indexOf(tagName);
-      if (index !== -1) {
-        allAppliances.splice(index, 1); // Supprimer l'élément de la liste
-      }
-    } else if (tagsList === ustensilsTagsList) {
-      index = allUstensils.indexOf(tagName);
-      if (index !== -1) {
-        allUstensils.splice(index, 1); // Supprimer l'élément de la liste
-      }
-    }
-
-    clickedTag.remove(); // Supprimer l'élément du DOM
+    // Masquer l'élément cliqué dans listOfTags
+    clickedTag.style.display = "none";
   });
-
-  // Événement de clic sur un élément de la zone des tags
+  
   tagsZone.addEventListener("click", function (event) {
     const clickedTag = event.target;
-
+  
     // Vérification si l'élément cliqué est une balise <span> (tag)
     if (clickedTag.tagName === "SPAN") {
-      clickedTag.remove(); // Supprimer l'élément du DOM
-    }
-
-    if (clickedTag.tagName === "LI") {
-      // Vérifier si l'élément tag cliqué est déjà présent dans tags-zone
-      const isTagSelected = tagsZone.contains(clickedTag);
-
-      if (isTagSelected) {
-        // Supprimer l'élément tag cliqué de tags-zone
-        tagsZone.removeChild(clickedTag);
-      } else {
-        // Ajouter l'élément tag cliqué à tags-zone
-        tagsZone.appendChild(clickedTag.cloneNode(true));
+      const tagText = clickedTag.textContent;
+      const tagClass = clickedTag.classList[1]; // Récupérer la deuxième classe du span
+  
+      // Vérifier la classe du tag pour le réinsérer dans la div correspondante
+      if (tagClass === "ingredientTag") {
+        const ingredientsListTags = document.querySelector(".ingredientsListTags");
+        const existingLi = ingredientsListTags.querySelector(`li.${tagClass}`);
+        if (existingLi) {
+          existingLi.style.display = "block";
+          existingLi.style.listStyleType = "none";
+          ingredientsListTags.removeChild(existingLi);
+        }
+        const tagListItem = document.createElement("li");
+        tagListItem.textContent = tagText;
+        tagListItem.className = `tag ${tagClass}`;
+        tagListItem.style.display = "list-item";
+        tagListItem.style.listStyleType = "none";
+        ingredientsListTags.appendChild(tagListItem);
+      } else if (tagClass === "appareilTag") {
+        const appareilsListTags = document.querySelector(".appareilsListTags");
+        const existingLi = appareilsListTags.querySelector(`li.${tagClass}`);
+        if (existingLi) {
+          existingLi.style.display = "block";
+          existingLi.style.listStyleType = "none";
+          appareilsListTags.removeChild(existingLi);
+        }
+        const tagListItem = document.createElement("li");
+        tagListItem.textContent = tagText;
+        tagListItem.className = `tag ${tagClass}`;
+        tagListItem.style.display = "list-item";
+        tagListItem.style.listStyleType = "none";
+        appareilsListTags.appendChild(tagListItem);
+      } else if (tagClass === "ustensilTag") {
+        const ustensilsListTags = document.querySelector(".ustensilsListTags");
+        const existingLi = ustensilsListTags.querySelector(`li.${tagClass}`);
+        if (existingLi) {
+          existingLi.style.display = "block";
+          existingLi.style.listStyleType = "none";
+          ustensilsListTags.removeChild(existingLi);
+        }
+        const tagListItem = document.createElement("li");
+        tagListItem.textContent = tagText;
+        tagListItem.className = `tag ${tagClass}`;
+        tagListItem.style.display = "list-item";
+        tagListItem.style.listStyleType = "none";
+        ustensilsListTags.appendChild(tagListItem);
       }
+  
+      // Supprimer l'élément tag cliqué de tagsZone
+      tagsZone.removeChild(clickedTag);
     }
-  });
+  });  
+  
 }
 
 
