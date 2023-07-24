@@ -124,6 +124,13 @@ let buttons = [ingredientsBtn, appareilsBtn, ustensilsBtn];
 // Déclaration de la variable tagsZone en dehors de la boucle for
 let tagsZone = document.querySelector(".tags-zone");
 
+let matchingRecipes = [];
+
+const selectedIngredients = [];
+const selectedApparels = [];
+const selectedUtensils = [];
+let searchedValue = '';
+
 // Boucle pour ajouter des écouteurs d'événements de clic à chaque bouton
 for (let i = 0; i < buttons.length; i++) {
   let button = buttons[i];
@@ -169,27 +176,36 @@ for (let i = 0; i < buttons.length; i++) {
     let clickedTag = event.target;
     let tagName = clickedTag.textContent;
 
-    // Créer un élément de balise pour l'élément cliqué
+    // Créer un élément de balise pour l'élément cliqué (tag)
     let tagElement = document.createElement("span");
     tagElement.textContent = tagName;
     tagElement.className = "tag";
 
     // Ajouter la classe spécifique en fonction de la classe de la div parente
     if (tagsList.classList.contains("ingredientsListTags")) {
-      tagElement.classList.add("ingredientTag");
+      tagElement.classList.add("ingredientTag")
+      selectedIngredients.push(tagName) // ajouter ingrédient à la liste des ingrédients séléctionnés
+      console.log(selectedIngredients)
     } else if (tagsList.classList.contains("appareilsListTags")) {
-      tagElement.classList.add("appareilTag");
+      tagElement.classList.add("appareilTag")
+      selectedApparels.push(tagName) // ajouter appareil à la liste des appareils séléctionnés
+      console.log(selectedApparels)
     } else if (tagsList.classList.contains("ustensilsListTags")) {
-      tagElement.classList.add("ustensilTag");
+      tagElement.classList.add("ustensilTag")
+      selectedUtensils.push(tagName) // ajouter ustensil à la liste des ustensils séléctionnés
+      console.log(selectedUtensils)
     }
 
     // Ajouter la balise à la section des tags
     tagsZone.appendChild(tagElement);
 
+
     // Masquer l'élément cliqué dans listOfTags
-    clickedTag.style.display = "none";
+    // clickedTag.style.display = "none";
+    clickedTag.remove()
   });
   
+  // Événement de clic sur un tag
   tagsZone.addEventListener("click", function (event) {
     const clickedTag = event.target;
   
@@ -206,10 +222,11 @@ for (let i = 0; i < buttons.length; i++) {
           existingLi.style.display = "block";
           existingLi.style.listStyleType = "none";
           ingredientsListTags.removeChild(existingLi);
+          console.log(tagText) // supprimer l'ingrédient de l'array selectedIngredients
         }
+        // recréer l'élément de la liste dans la liste des ingrédients
         const tagListItem = document.createElement("li");
         tagListItem.textContent = tagText;
-        tagListItem.className = `tag ${tagClass}`;
         tagListItem.style.display = "list-item";
         tagListItem.style.listStyleType = "none";
         ingredientsListTags.appendChild(tagListItem);
@@ -221,9 +238,9 @@ for (let i = 0; i < buttons.length; i++) {
           existingLi.style.listStyleType = "none";
           appareilsListTags.removeChild(existingLi);
         }
+        // recréer l'élément de la liste dans la liste des appareils
         const tagListItem = document.createElement("li");
         tagListItem.textContent = tagText;
-        tagListItem.className = `tag ${tagClass}`;
         tagListItem.style.display = "list-item";
         tagListItem.style.listStyleType = "none";
         appareilsListTags.appendChild(tagListItem);
@@ -235,21 +252,21 @@ for (let i = 0; i < buttons.length; i++) {
           existingLi.style.listStyleType = "none";
           ustensilsListTags.removeChild(existingLi);
         }
+        // recréer l'élément de la liste dans la liste des ustensils
         const tagListItem = document.createElement("li");
         tagListItem.textContent = tagText;
-        tagListItem.className = `tag ${tagClass}`;
         tagListItem.style.display = "list-item";
         tagListItem.style.listStyleType = "none";
         ustensilsListTags.appendChild(tagListItem);
       }
   
       // Supprimer l'élément tag cliqué de tagsZone
-      tagsZone.removeChild(clickedTag);
+      clickedTag.remove();
     }
-  });  
+  });
+   
   
 }
-
 
 // Tableaux pour stocker les ingrédients, les appareils et les ustensiles uniques
 let allIngredients = [];
@@ -282,15 +299,9 @@ for (const recipe of recipes) {
   }
 }
 
-
-
-
-
-
-// Sélection des listes de balises dans le DOM
-ingredientsTagsList = document.querySelector(".ingredientsListTags");
-appareilsTagsList = document.querySelector(".appareilsListTags");
-ustensilsTagsList = document.querySelector(".ustensilsListTags");
+const ingredientsTagsList = document.querySelector(".ingredientsListTags");
+const appareilsTagsList = document.querySelector(".appareilsListTags");
+const ustensilsTagsList = document.querySelector(".ustensilsListTags");
 
 // Boucle pour créer les balises d'ingrédients et les ajouter à la liste
 for (let ingredient of allIngredients) {
@@ -305,50 +316,90 @@ for (let ingredient of allIngredients) {
 
 // Boucle pour créer les balises d'appareils et les ajouter à la liste
 for (let appliance of allAppliances) {
-  // Créez un élément de liste pour chaque ingrédient
+  // Créez un élément de liste pour chaque appareil
   const li = document.createElement("li");
   li.textContent = appliance;
   li.style.listStyleType = "none";
 
-  // Ajoutez l'élément de liste à la liste d'ingrédients
+  // Ajoutez l'élément de liste à la liste d'appareils
   appareilsTagsList.appendChild(li);
 }
 
 // Boucle pour créer les balises d'ustensiles et les ajouter à la liste
 for (let ustensil of allUstensils) {
-  // Créez un élément de liste pour chaque ingrédient
+  // Créez un élément de liste pour chaque ustensile
   const li = document.createElement("li");
   li.textContent = ustensil;
   li.style.listStyleType = "none";
 
-  // Ajoutez l'élément de liste à la liste d'ingrédients
+  // Ajoutez l'élément de liste à la liste d'ustensiles
   ustensilsTagsList.appendChild(li);
 }
 
-// trier les listes dans les dropdowns
+
+
+// Sélection des listes de balises dans le DOM
+
 
 // Récupérer les éléments nécessaires du DOM
-const input = document.querySelector(".inputBtn");
+const inputIngredients = ingredientsBtn.querySelector("input");
+const inputAppareils = appareilsBtn.querySelector("input");
+const inputUstensils = ustensilsBtn.querySelector("input");
 
-// Écouter l'événement "input" sur le champ de recherche
-input.addEventListener("input", function(event) {
-  // Récupérer la valeur saisie dans le champ de recherche
+
+// Écouter l'événement "input" sur le champ de recherche d'ingrédients
+inputIngredients.addEventListener("input", function(event) {
+  // Récupérer la valeur saisie dans le champ de recherche d'ingrédients
   const searchValue = event.target.value.toLowerCase();
-  
-  // Supprimer tous les éléments de la liste d'ingrédients
-  ingredientsTagsList.innerHTML = "";
 
-  // Filtrer les ingrédients correspondant à la recherche
-  const filteredIngredients = allIngredients.filter(function(ingredient) {
-    return ingredient.toLowerCase().includes(searchValue);
+  // Récupérer tous les éléments li dans ingredientsTagsList
+  const liElements = ingredientsTagsList.querySelectorAll("li");
+
+  // Parcourir tous les éléments li et les afficher ou les masquer en fonction de la correspondance avec la valeur de recherche
+  liElements.forEach(function(li) {
+    const ingredient = li.textContent.toLowerCase();
+    if (ingredient.startsWith(searchValue)) {
+      li.style.display = "list-item";
+    } else {
+      li.style.display = "none";
+    }
   });
+});
 
-  // Créer un élément de liste pour chaque ingrédient filtré
-  for (let i = 0; i < filteredIngredients.length; i++) {
-    const ingredient = filteredIngredients[i];
-    const li = document.createElement("li");
-    li.textContent = ingredient;
-    li.style.listStyleType = "none";
-    ingredientsTagsList.appendChild(li);
-  }
+// Écouter l'événement "input" sur le champ de recherche d'appareils
+inputAppareils.addEventListener("input", function(event) {
+  // Récupérer la valeur saisie dans le champ de recherche d'appareils
+  const searchValue = event.target.value.toLowerCase();
+
+  // Récupérer tous les éléments li dans appareilsTagsList
+  const liElements = appareilsTagsList.querySelectorAll("li");
+  
+  // Parcourir tous les éléments li et les afficher ou les masquer en fonction de la correspondance avec la valeur de recherche
+  liElements.forEach(function(li) {
+    const appareil = li.textContent.toLowerCase();
+    if (appareil.startsWith(searchValue)) {
+      li.style.display = "list-item";
+    } else {
+      li.style.display = "none";
+    }
+  });
+});
+
+// Écouter l'événement "input" sur le champ de recherche d'ustensiles
+inputUstensils.addEventListener("input", function(event) {
+  // Récupérer la valeur saisie dans le champ de recherche d'ustensiles
+  const searchValue = event.target.value.toLowerCase();
+
+  // Récupérer tous les éléments li dans ustensilsTagsList
+  const liElements = ustensilsTagsList.querySelectorAll("li");
+
+  // Parcourir tous les éléments li et les afficher ou les masquer en fonction de la correspondance avec la valeur de recherche
+  liElements.forEach(function(li) {
+    const ustensil = li.textContent.toLowerCase();
+    if (ustensil.startsWith(searchValue)) {
+      li.style.display = "list-item";
+    } else {
+      li.style.display = "none";
+    }
+  });
 });
