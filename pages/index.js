@@ -31,7 +31,8 @@ function AfficherRecettes() {
     ingredientsElement.style.fontSize = "12px";
     ingredientsElement.setAttribute("class", "allIngredientsOfRecipe");
     for (const ingredients of article.ingredients) {
-      ingredientsElement.innerHTML = ingredientsElement.innerHTML + `<b>${ingredients.ingredient ?? ''}:</b> ${ingredients.quantity ?? ''} ${ingredients.unit ?? ''}<br>`
+      const ingredientLine = ingredients.quantity ? `<b>${ingredients.ingredient}:</b> ${ingredients.quantity} ${ingredients.unit ?? ''}<br>` : `<b>${ingredients.ingredient}</b> ${ingredients.unit ?? ''}<br>`;
+      ingredientsElement.innerHTML += ingredientLine;
     }
       
     const descriptionElement = document.createElement("p");
@@ -70,54 +71,6 @@ searchBar.addEventListener("input", function() {
   // Récupération de la valeur de l'input
   searchedValue = searchBar.value.toLowerCase();
   refreshRecipes()
-  /*
-  // Récupération de tous les articles
-  const articles = document.querySelectorAll(".recipes-container article");
-
-  // Parcours des articles
-  for (let i = 0; i < articles.length; i++) {
-    const article = articles[i];
-
-    // Récupération du titre de l'article
-    const title = article.querySelector(".titleOfRecipe").innerText.toLowerCase();
-
-    // Récupération des ingredients de l'article
-    const ingredients = article.querySelector(".allIngredientsOfRecipe").innerText.toLowerCase();
-
-    // Récupération de la description des ingredients de l'article
-    const description = article.querySelector(".descriptionOfRecipe").innerText.toLowerCase();
-
-    // Vérification de la longueur de la chaîne de caractères, on affiche l'article
-    if (searchBar.value.length < 3) {
-      article.style.display = "block";
-     }
-    // Vérification de la longueur de la chaîne de caractères ET Si le titre OU la liste des ingrédient OU un mot/nombre de la description contient la valeur de recherche, on affiche l'article en question
-    else if (searchBar.value.length >= 3 && (title.includes(searchedValue) || ingredients.includes(searchedValue) || description.includes(searchedValue))){
-      article.style.display = "block";
-    }
-    // Sinon on efface tout et on affiche l'erreur
-    else {
-      article.style.display = "none";
-    }
-    
-  }
-
-  // Récupération de l'élément HTML pour afficher l'erreur
-  const errorArticles = document.querySelector(".recipes-error");
-  const errorArticlesP = document.querySelector(".recipes-error-p");
-
-  // Vérification si au moins un article est visible
-  const anyVisibleArticle = Array.from(articles).some((article) => article.style.display !== "none"  );
-
-  // Affichage ou masquage des éléments d'erreur
-  if (anyVisibleArticle) {
-    errorArticles.style.display = "none";
-    errorArticlesP.style.display = "none";
-  } else {
-    errorArticles.style.display = "block";
-    errorArticlesP.style.display = "flex";
-  }
-*/
 });
   
 // Sélection des boutons et des listes de balises dans le DOM
@@ -201,7 +154,6 @@ for (let i = 0; i < buttons.length; i++) {
 
 
     // Masquer l'élément cliqué dans listOfTags
-    // clickedTag.style.display = "none";
     clickedTag.remove()
 
     refreshRecipes()
@@ -437,40 +389,37 @@ inputUstensils.addEventListener("input", function(event) {
 // fonction permettant de rafraîchir 
 function refreshRecipes() {
   const hasFilterCriterias = searchedValue || selectedIngredients.length || selectedUtensils.length || selectedApparels.length
-  matchingRecipes = !hasFilterCriterias ? recipes : recipes.filter((recipe) =>
+
+    matchingRecipes = !hasFilterCriterias ? recipes : recipes.filter((recipe) =>
     { 
-      if(searchedValue !== '' && recipe.name.includes(searchedValue)) {
-        return true
-      }
-
-      if(searchedValue !== '' && recipe.description.includes(searchedValue)) {
-        return true
-      } 
-
-      return recipe.ingredients.find( ingredient => selectedIngredients.includes(ingredient.ingredient)) ||
-      recipe.ustensils.find(ustensil => selectedUtensils.includes(ustensil)) ||
-      selectedApparels.includes(recipe.appliance)
+      return (
+        (
+          // si searchValue vide ou caractères inférieur à 3
+          (searchedValue === '' || searchedValue.length < 3) ||
+            (searchedValue !== '' && (recipe.name.includes(searchedValue) || recipe.description.includes(searchedValue)))
+        ) &&
+        (
+          selectedIngredients.length === 0 ||
+            (selectedIngredients.length > 0 && recipe.ingredients.find( ingredient => selectedIngredients.includes(ingredient.ingredient)))
+        ) &&
+        (
+          selectedUtensils.length === 0 ||
+            (selectedUtensils.length > 0 && recipe.ustensils.find(ustensil => selectedUtensils.includes(ustensil))) 
+        ) &&
+        (
+          selectedApparels.length === 0 ||
+            (selectedApparels.length > 0 && selectedApparels.includes(recipe.appliance))
+        )
+      )
     })
-
-  console.log(matchingRecipes)
-  // reset arrays
-  /*
-  allIngredients = [];
-  allUstensils = [];  
-  allAppliances = [];
-
-  for (const recipe of matchingRecipes) {
-    // display recipes that are in matching recipes
-
-    allIngredients.push(...recipe.ingredients);
-    allUstensils.push(...recipe.ustensils);
-    allAppliances.push(recipe.appliance);
-  }*/
 
   // Créez des ensembles pour stocker les valeurs uniques
   const uniqueIngredients = new Set();
   const uniqueUstensils = new Set();
   const uniqueAppliances = new Set();
+
+  const sectionRecipes = document.querySelector(".recipes-container");
+  sectionRecipes.innerHTML = ''
 
   for (const recipe of matchingRecipes) {
     // Ajoutez chaque ingrédient, ustensile et appareil aux ensembles respectifs
@@ -489,15 +438,56 @@ function refreshRecipes() {
     if (!selectedApparels.includes(recipe.appliance)) {
       uniqueAppliances.add(recipe.appliance);
     }
+
+    const articleElement = document.createElement("article");
+    
+    const divImage = document.createElement("div");
+    divImage.setAttribute("class", "imgOfRecipe");
+
+    const textContainer = document.createElement("div");
+    textContainer.setAttribute("class", "textContainer");
+
+    const div1 = document.createElement("div");
+    const nomElement = document.createElement("h2");
+    nomElement.style.fontSize = "18px";
+    nomElement.setAttribute("class", "titleOfRecipe");
+    nomElement.innerText = recipe.name;
+    nomElement.style.margin = "0";
+    const timeElement = document.createElement("p");
+    timeElement.style.fontSize = "18px";
+    timeElement.style.margin = "0";
+    timeElement.innerHTML = `${recipe.time} min`;
+    
+    const div2 = document.createElement("div");
+    const ingredientsElement = document.createElement("p");
+    ingredientsElement.style.fontSize = "12px";
+    ingredientsElement.setAttribute("class", "allIngredientsOfRecipe");
+    for (const ingredients of recipe.ingredients) {
+      const ingredientLine = ingredients.quantity ? `<b>${ingredients.ingredient}:</b> ${ingredients.quantity} ${ingredients.unit ?? ''}<br>` : `<b>${ingredients.ingredient}</b> ${ingredients.unit ?? ''}<br>`;
+      ingredientsElement.innerHTML += ingredientLine;
+    }
+      
+    const descriptionElement = document.createElement("p");
+    descriptionElement.style.fontSize = "12px";
+    descriptionElement.setAttribute("class", "descriptionOfRecipe")
+    descriptionElement.innerHTML = `${recipe.description}`
+
+    // On rattache la balise article a la section Fiches
+    sectionRecipes.appendChild(articleElement);
+    articleElement.appendChild(divImage);
+    articleElement.appendChild(textContainer);
+    textContainer.appendChild(div1);  
+    div1.appendChild(nomElement);
+    div1.appendChild(timeElement);
+    textContainer.appendChild(div2);
+    div2.appendChild(ingredientsElement);
+    div2.appendChild(descriptionElement);
   }
 
-  // Convertissez les ensembles en tableaux pour continuer à travailler avec eux si nécessaire
+  // Convertir les ensembles en tableaux pour continuer à travailler avec eux si nécessaire
   allIngredients = Array.from(uniqueIngredients);
   allUstensils = Array.from(uniqueUstensils);
   allAppliances = Array.from(uniqueAppliances);
-
-
-  console.log(allAppliances)
   
   // update dropdowns with new options
   ingredientsTagsList.innerHTML = '';
@@ -508,5 +498,26 @@ function refreshRecipes() {
   displayUstensils()
 
   searchBar.value.toLowerCase();
+
+  // Récupération de tous les articles
+  const articles = document.querySelectorAll(".recipes-container article");
+
+  // Récupération de l'élément HTML pour afficher l'erreur
+  const errorArticles = document.querySelector(".recipes-error");
+  const errorArticlesP = document.querySelector(".recipes-error-p");
+
+  // Vérification si au moins un article est visible
+  const anyVisibleArticle = Array.from(articles).some((article) => article.style.display !== "none"  );
+
+  console.log(anyVisibleArticle)
+  // Affichage ou masquage des éléments d'erreur
+  if (anyVisibleArticle) {
+    errorArticles.style.display = "none";
+    errorArticlesP.style.display = "none";
+  } else {
+    errorArticles.style.display = "block";
+    errorArticlesP.style.display = "flex";
+  }
 }
 
+refreshRecipes()
