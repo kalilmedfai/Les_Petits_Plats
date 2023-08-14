@@ -16,17 +16,28 @@ function AfficherRecettes() {
     textContainer.setAttribute("class", "textContainer");
 
     const div1 = document.createElement("div");
+    div1.setAttribute("class", "underImg");
     const nomElement = document.createElement("h2");
     nomElement.style.fontSize = "18px";
     nomElement.setAttribute("class", "titleOfRecipe");
     nomElement.innerText = article.name;
     nomElement.style.margin = "0";
+
+    const div1Bis = document.createElement("div");
+    div1Bis.setAttribute("class", "divOfTime");
+    
+    const timerIcon = document.createElement("img");
+    timerIcon.setAttribute("src", "assets/Logo/icons8-clock-144.png");
+    timerIcon.style.height = "24px";
+    timerIcon.style.width = "24px";
+
     const timeElement = document.createElement("p");
     timeElement.style.fontSize = "18px";
     timeElement.style.margin = "0";
     timeElement.innerHTML = `${article.time} min`;
     
     const div2 = document.createElement("div");
+    div2.setAttribute("class", "ingredientsAndDescription");
     const ingredientsElement = document.createElement("p");
     ingredientsElement.style.fontSize = "12px";
     ingredientsElement.setAttribute("class", "allIngredientsOfRecipe");
@@ -44,9 +55,11 @@ function AfficherRecettes() {
     sectionRecipes.appendChild(articleElement);
     articleElement.appendChild(divImage);
     articleElement.appendChild(textContainer);
-    textContainer.appendChild(div1);  
+    textContainer.appendChild(div1);
     div1.appendChild(nomElement);
-    div1.appendChild(timeElement);
+    div1.appendChild(div1Bis); 
+    div1Bis.appendChild(timerIcon);
+    div1Bis.appendChild(timeElement);
     textContainer.appendChild(div2);
     div2.appendChild(ingredientsElement);
     div2.appendChild(descriptionElement);
@@ -448,17 +461,28 @@ function refreshRecipes() {
     textContainer.setAttribute("class", "textContainer");
 
     const div1 = document.createElement("div");
+    div1.setAttribute("class", "underImg");
     const nomElement = document.createElement("h2");
     nomElement.style.fontSize = "18px";
     nomElement.setAttribute("class", "titleOfRecipe");
     nomElement.innerText = recipe.name;
     nomElement.style.margin = "0";
+
+    const div1Bis = document.createElement("div");
+    div1Bis.setAttribute("class", "divOfTime");
+
+    const timerIcon = document.createElement("img");
+    timerIcon.setAttribute("src", "assets/Logo/icons8-clock-144.png");
+    timerIcon.style.height = "24px";
+    timerIcon.style.width = "24px";
+
     const timeElement = document.createElement("p");
     timeElement.style.fontSize = "18px";
     timeElement.style.margin = "0";
     timeElement.innerHTML = `${recipe.time} min`;
     
     const div2 = document.createElement("div");
+    div2.setAttribute("class", "ingredientsAndDescription");
     const ingredientsElement = document.createElement("p");
     ingredientsElement.style.fontSize = "12px";
     ingredientsElement.setAttribute("class", "allIngredientsOfRecipe");
@@ -476,9 +500,11 @@ function refreshRecipes() {
     sectionRecipes.appendChild(articleElement);
     articleElement.appendChild(divImage);
     articleElement.appendChild(textContainer);
-    textContainer.appendChild(div1);  
+    textContainer.appendChild(div1);
     div1.appendChild(nomElement);
-    div1.appendChild(timeElement);
+    div1.appendChild(div1Bis); 
+    div1Bis.appendChild(timerIcon);
+    div1Bis.appendChild(timeElement);
     textContainer.appendChild(div2);
     div2.appendChild(ingredientsElement);
     div2.appendChild(descriptionElement);
