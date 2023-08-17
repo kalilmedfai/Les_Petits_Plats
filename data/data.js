@@ -1725,3 +1725,35 @@ const recipes = [
     }
 ]
 
+const normalizedRecipes = recipes.map((recipe)=>{
+    const lowerCaseName = recipe.name.toLowerCase()
+    const capitalizedName = lowerCaseName.charAt(0).toUpperCase() + lowerCaseName.slice(1)
+
+    const lowerCaseAppliance = recipe.appliance.toLowerCase()
+    const capitalizedAppliance = lowerCaseAppliance.charAt(0).toUpperCase() + lowerCaseAppliance.slice(1)
+
+    const capitalizedUstensils = recipe.ustensils.map((ustensil) => {
+        const lowerCaseUstensil = ustensil.toLowerCase()
+        const capitalizedUstensil = lowerCaseUstensil.charAt(0).toUpperCase() + lowerCaseUstensil.slice(1)
+        return capitalizedUstensil
+    })
+
+    const capitalizedIngredients = recipe.ingredients.map((ingredient) => {
+        const lowerCaseIngredient = ingredient.ingredient.toLowerCase()
+        const capitalizedIngredient = lowerCaseIngredient.charAt(0).toUpperCase() + lowerCaseIngredient.slice(1)
+        return {
+            ...ingredient,
+            ingredient:capitalizedIngredient
+        }
+    })
+
+    return {
+        ...recipe,
+        name:capitalizedName,
+        appliance:capitalizedAppliance,
+        ustensils:capitalizedUstensils,
+        ingredients:capitalizedIngredients
+    }
+})
+
+console.log({recipes, normalizedRecipes})

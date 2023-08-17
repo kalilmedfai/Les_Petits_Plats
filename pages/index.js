@@ -1,9 +1,9 @@
 function AfficherRecettes() {
 
   // Affiche les recettes
-  for (let i = 0; i < recipes.length; i++) {
+  for (let i = 0; i < normalizedRecipes.length; i++) {
     
-    const article = recipes[i];
+    const article = normalizedRecipes[i];
     // Récupération de l'élément du DOM qui accueillera les fiches
     const sectionRecipes = document.querySelector(".recipes-container");
     
@@ -258,9 +258,7 @@ for (let i = 0; i < buttons.length; i++) {
       refreshRecipes();
     }
   }
-});
-
-   
+});   
   
 }
 
@@ -270,7 +268,7 @@ let allAppliances = [];
 let allUstensils = [];
 
 // Boucle pour extraire les ingrédients uniques des recettes
-for (const recipe of recipes) {
+for (const recipe of normalizedRecipes) {
   for (const ingredient of recipe.ingredients) {
     if (!allIngredients.includes(ingredient.ingredient)) {
       allIngredients.push(ingredient.ingredient);
@@ -279,7 +277,7 @@ for (const recipe of recipes) {
 }
 
 // Boucle pour extraire les appareils uniques des recettes
-for (const recipe of recipes) {
+for (const recipe of normalizedRecipes) {
   const appliance = recipe.appliance;
   if (!allAppliances.includes(appliance)) {
     allAppliances.push(appliance);
@@ -287,7 +285,7 @@ for (const recipe of recipes) {
 }
 
 // Boucle pour extraire les ustensiles uniques des recettes
-for (const recipe of recipes) {
+for (const recipe of normalizedRecipes) {
   for (const ustensil of recipe.ustensils) {
     if (!allUstensils.includes(ustensil)) {
       allUstensils.push(ustensil);
@@ -411,14 +409,14 @@ inputUstensils.addEventListener("input", function(event) {
 // fonction permettant de rafraîchir 
 function refreshRecipes() {
   const hasFilterCriterias = searchedValue || selectedIngredients.length || selectedUtensils.length || selectedApparels.length
-
-    matchingRecipes = !hasFilterCriterias ? recipes : recipes.filter((recipe) =>
+  
+    matchingRecipes = !hasFilterCriterias ? normalizedRecipes : normalizedRecipes.filter((recipe) =>
     { 
       return (
         (
           // si searchValue vide ou caractères inférieur à 3
           (searchedValue === '' || searchedValue.length < 3) ||
-            (searchedValue !== '' && (recipe.name.includes(searchedValue) || recipe.description.includes(searchedValue)))
+            (searchedValue !== '' && (recipe.name.toLowerCase().includes(searchedValue) || recipe.description.toLowerCase().includes(searchedValue)))
         ) &&
         (
           selectedIngredients.length === 0 ||
