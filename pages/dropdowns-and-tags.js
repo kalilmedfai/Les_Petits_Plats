@@ -90,9 +90,12 @@ for (let i = 0; i < buttons.length; i++) {
 
     refreshRecipes()
   });
+}
 
-  // Événement de clic sur un tag
+// Événement de clic sur un tag
+console.log("addEventListener")
 tagsZone.addEventListener("click", function (event) {
+    event.stopPropagation()
     const clickedTag = event.target;
   
     // Vérification si l'élément cliqué est une balise <img>
@@ -116,6 +119,13 @@ tagsZone.addEventListener("click", function (event) {
   
       // Supprimer l'élément tag cliqué de tagsZone
       parentSpan.remove();
+
+      const selectedList = tagClass === "ingredientTag" ? selectedIngredients : 
+        (tagClass === "appareilTag" ? selectedApparels : selectedUtensils)
+      
+        const position = selectedList.indexOf(tagText)
+        selectedList.splice(position, 1)
+      
   
       refreshRecipes();
     }
@@ -203,7 +213,6 @@ tagsZone.addEventListener("click", function (event) {
   });
   */
   
-}
 
 // Tableaux pour stocker les ingrédients, les appareils et les ustensiles uniques
 let allIngredients = [];
