@@ -1,3 +1,7 @@
+const selectedIngredients = [];
+const selectedApparels = [];
+const selectedUtensils = [];
+
 // Sélection des boutons et des listes de balises dans le DOM
 let ingredientsBtn = document.querySelector(".ingredientsBtn");
 let appareilsBtn = document.querySelector(".appareilsBtn");
@@ -54,27 +58,71 @@ for (let i = 0; i < buttons.length; i++) {
     let clickedTag = event.target;
     let tagName = clickedTag.textContent;
 
-    // Créer un élément de balise pour l'élément cliqué
+    // Créer un élément de balise pour l'élément cliqué (tag)
     let tagElement = document.createElement("span");
     tagElement.textContent = tagName;
     tagElement.className = "tag";
+    const closeIcon = document.createElement("img")
+    closeIcon.setAttribute("src", "assets/Logo/icons8-close-64.png");
+    tagElement.appendChild(closeIcon)
 
     // Ajouter la classe spécifique en fonction de la classe de la div parente
     if (tagsList.classList.contains("ingredientsListTags")) {
-      tagElement.classList.add("ingredientTag");
+      tagElement.classList.add("ingredientTag")
+      selectedIngredients.push(tagName) // ajouter ingrédient à la liste des ingrédients séléctionnés
+      console.log(selectedIngredients)
     } else if (tagsList.classList.contains("appareilsListTags")) {
-      tagElement.classList.add("appareilTag");
+      tagElement.classList.add("appareilTag")
+      selectedApparels.push(tagName) // ajouter appareil à la liste des appareils séléctionnés
+      console.log(selectedApparels)
     } else if (tagsList.classList.contains("ustensilsListTags")) {
-      tagElement.classList.add("ustensilTag");
+      tagElement.classList.add("ustensilTag")
+      selectedUtensils.push(tagName) // ajouter ustensil à la liste des ustensils séléctionnés
+      console.log(selectedUtensils)
     }
 
     // Ajouter la balise à la section des tags
     tagsZone.appendChild(tagElement);
 
+
     // Masquer l'élément cliqué dans listOfTags
-    clickedTag.style.display = "none";
+    clickedTag.remove()
+
+    refreshRecipes()
   });
+
+  // Événement de clic sur un tag
+tagsZone.addEventListener("click", function (event) {
+    const clickedTag = event.target;
   
+    // Vérification si l'élément cliqué est une balise <img>
+    if (clickedTag.tagName === "IMG" && clickedTag.parentElement.tagName === "SPAN") {
+      const parentSpan = clickedTag.parentElement;
+  
+      // Récupérer le texte et la classe du tag
+      const tagText = parentSpan.textContent;
+      const tagClass = parentSpan.classList[1];
+  
+      // Récupérer la liste des balises appropriée
+      const tagList = tagClass === "ingredientTag" ? ingredientsTagsList :
+        (tagClass === "appareilTag" ? appareilsTagsList : ustensilsTagsList);
+  
+      // Recréer l'élément de la liste dans la liste appropriée
+      const tagListItem = document.createElement("li");
+      tagListItem.textContent = tagText;
+      tagListItem.style.display = "list-item";
+      tagListItem.style.listStyleType = "none";
+      tagList.appendChild(tagListItem);
+  
+      // Supprimer l'élément tag cliqué de tagsZone
+      parentSpan.remove();
+  
+      refreshRecipes();
+    }
+  });
+   
+  /*
+  // Événement de clic sur un tag
   tagsZone.addEventListener("click", function (event) {
     const clickedTag = event.target;
   
@@ -91,10 +139,17 @@ for (let i = 0; i < buttons.length; i++) {
           existingLi.style.display = "block";
           existingLi.style.listStyleType = "none";
           ingredientsListTags.removeChild(existingLi);
+          console.log(selectedIngredients)
         }
+        // supprimer l'ingrédient de l'array selectedIngredients
+        for (let i = selectedIngredients.length - 1; i >= 0; i--) {
+          if (tagText === selectedIngredients[i]) {
+            selectedIngredients.splice(i, 1);
+          }
+        }
+        // recréer l'élément de la liste dans la liste des ingrédients
         const tagListItem = document.createElement("li");
         tagListItem.textContent = tagText;
-        tagListItem.className = `tag ${tagClass}`;
         tagListItem.style.display = "list-item";
         tagListItem.style.listStyleType = "none";
         ingredientsListTags.appendChild(tagListItem);
@@ -106,9 +161,15 @@ for (let i = 0; i < buttons.length; i++) {
           existingLi.style.listStyleType = "none";
           appareilsListTags.removeChild(existingLi);
         }
+        // supprimer l'appareil de l'array selectedApparels
+        for (let i = selectedApparels.length - 1; i >= 0; i--) {
+          if (tagText === selectedApparels[i]) {
+            selectedApparels.splice(i, 1);
+          }
+        }
+        // recréer l'élément de la liste dans la liste des appareils
         const tagListItem = document.createElement("li");
         tagListItem.textContent = tagText;
-        tagListItem.className = `tag ${tagClass}`;
         tagListItem.style.display = "list-item";
         tagListItem.style.listStyleType = "none";
         appareilsListTags.appendChild(tagListItem);
@@ -120,9 +181,15 @@ for (let i = 0; i < buttons.length; i++) {
           existingLi.style.listStyleType = "none";
           ustensilsListTags.removeChild(existingLi);
         }
+        // supprimer l'ustensil de l'array selectedUstensils
+        for (let i = selectedUtensils.length - 1; i >= 0; i--) {
+          if (tagText === selectedUtensils[i]) {
+            selectedUtensils.splice(i, 1);
+          }
+        }
+        // recréer l'élément de la liste dans la liste des ustensils
         const tagListItem = document.createElement("li");
         tagListItem.textContent = tagText;
-        tagListItem.className = `tag ${tagClass}`;
         tagListItem.style.display = "list-item";
         tagListItem.style.listStyleType = "none";
         ustensilsListTags.appendChild(tagListItem);
@@ -131,37 +198,92 @@ for (let i = 0; i < buttons.length; i++) {
       // Supprimer l'élément tag cliqué de tagsZone
       clickedTag.remove();
 
-
-      /*// Tri des articles en fonction des balises affichées
-      const visibleTags = Array.from(tagsZone.querySelectorAll(".tag")).map(tag => tag.textContent.toLowerCase());
-  
-      // Récupération de tous les articles
-      const articles = document.querySelectorAll(".recipes-container article");
-  
-      // Parcours des articles
-      for (let i = 0; i < articles.length; i++) {
-        const article = articles[i];
-  
-        // Récupération du titre de l'article
-        const title = article.querySelector(".titleOfRecipe").innerText.toLowerCase();
-  
-        // Récupération des ingrédients de l'article
-        const ingredients = article.querySelector(".allIngredientsOfRecipe").innerText.toLowerCase();
-  
-        // Récupération de la description de l'article
-        const description = article.querySelector(".descriptionOfRecipe").innerText.toLowerCase();
-  
-        // Vérification si l'article correspond aux balises affichées
-        const isArticleVisible = visibleTags.some(tag => title.includes(tag) || ingredients.includes(tag) || description.includes(tag));
-  
-        // Affichage ou masquage de l'article en fonction de la correspondance
-        article.style.display = isArticleVisible ? "block" : "none";
-      }*/
+      refreshRecipes()
     }
   });
-   
+  */
   
 }
+
+// Tableaux pour stocker les ingrédients, les appareils et les ustensiles uniques
+let allIngredients = [];
+let allAppliances = [];
+let allUstensils = [];
+
+// Boucle pour extraire les ingrédients uniques des recettes
+for (const recipe of recipes) {
+  for (const ingredient of recipe.ingredients) {
+    if (!allIngredients.includes(ingredient.ingredient)) {
+      allIngredients.push(ingredient.ingredient);
+    }
+  }
+}
+
+// Boucle pour extraire les appareils uniques des recettes
+for (const recipe of recipes) {
+  const appliance = recipe.appliance;
+  if (!allAppliances.includes(appliance)) {
+    allAppliances.push(appliance);
+  }
+}
+
+// Boucle pour extraire les ustensiles uniques des recettes
+for (const recipe of recipes) {
+  for (const ustensil of recipe.ustensils) {
+    if (!allUstensils.includes(ustensil)) {
+      allUstensils.push(ustensil);
+    }
+  }
+}
+
+const ingredientsTagsList = document.querySelector(".ingredientsListTags");
+const appareilsTagsList = document.querySelector(".appareilsListTags");
+const ustensilsTagsList = document.querySelector(".ustensilsListTags");
+
+function displayIngredients() {
+  // Boucle pour créer les balises d'ingrédients et les ajouter à la liste
+  for (let ingredient of allIngredients) {
+    // Créez un élément de liste pour chaque ingrédient
+    const li = document.createElement("li");
+    li.textContent = ingredient;
+    li.style.listStyleType = "none";
+
+    // Ajoutez l'élément de liste à la liste d'ingrédients
+    ingredientsTagsList.appendChild(li);
+  }
+}
+
+function displayAppliances() {
+  // Boucle pour créer les balises d'appareils et les ajouter à la liste
+  for (let appliance of allAppliances) {
+    // Créez un élément de liste pour chaque appareil
+    const li = document.createElement("li");
+    li.textContent = appliance;
+    li.style.listStyleType = "none";
+
+    // Ajoutez l'élément de liste à la liste d'appareils
+    appareilsTagsList.appendChild(li);
+  }
+}
+
+function displayUstensils() {
+  // Boucle pour créer les balises d'ustensiles et les ajouter à la liste
+  for (let ustensil of allUstensils) {
+    // Créez un élément de liste pour chaque ustensile
+    const li = document.createElement("li");
+    li.textContent = ustensil;
+    li.style.listStyleType = "none";
+
+    // Ajoutez l'élément de liste à la liste d'ustensiles
+    ustensilsTagsList.appendChild(li);
+  }
+}
+
+displayIngredients()
+displayAppliances()
+displayUstensils()
+
+// Sélection des listes de balises dans le DOM
 
 
 // Récupérer les éléments nécessaires du DOM
@@ -179,17 +301,14 @@ inputIngredients.addEventListener("input", function(event) {
   const liElements = ingredientsTagsList.querySelectorAll("li");
 
   // Parcourir tous les éléments li et les afficher ou les masquer en fonction de la correspondance avec la valeur de recherche
-  liElements.forEach(function(li) {
+  for (let i = 0; i < liElements.length; i++) {
+    const li = liElements[i];
     const ingredient = li.textContent.toLowerCase();
-    if (ingredient.startsWith(searchValue)) {
-      li.style.display = "list-item";
-    } else {
-      li.style.display = "none";
-    }
-  });
+    const displayStyle = ingredient.startsWith(searchValue) ? "list-item" : "none";
+    li.style.display = displayStyle;
+  }  
 });
 
-console.log(inputAppareils)
 // Écouter l'événement "input" sur le champ de recherche d'appareils
 inputAppareils.addEventListener("input", function(event) {
   // Récupérer la valeur saisie dans le champ de recherche d'appareils
@@ -199,14 +318,12 @@ inputAppareils.addEventListener("input", function(event) {
   const liElements = appareilsTagsList.querySelectorAll("li");
   
   // Parcourir tous les éléments li et les afficher ou les masquer en fonction de la correspondance avec la valeur de recherche
-  liElements.forEach(function(li) {
+  for (let i = 0; i < liElements.length; i++) {
+    const li = liElements[i];
     const appareil = li.textContent.toLowerCase();
-    if (appareil.startsWith(searchValue)) {
-      li.style.display = "list-item";
-    } else {
-      li.style.display = "none";
-    }
-  });
+    const displayStyle = appareil.startsWith(searchValue) ? "list-item" : "none";
+    li.style.display = displayStyle;
+  }  
 });
 
 // Écouter l'événement "input" sur le champ de recherche d'ustensiles
@@ -218,12 +335,10 @@ inputUstensils.addEventListener("input", function(event) {
   const liElements = ustensilsTagsList.querySelectorAll("li");
 
   // Parcourir tous les éléments li et les afficher ou les masquer en fonction de la correspondance avec la valeur de recherche
-  liElements.forEach(function(li) {
+  for (let i = 0; i < liElements.length; i++) {
+    const li = liElements[i];
     const ustensil = li.textContent.toLowerCase();
-    if (ustensil.startsWith(searchValue)) {
-      li.style.display = "list-item";
-    } else {
-      li.style.display = "none";
-    }
-  });
+    const displayStyle = ustensil.startsWith(searchValue) ? "list-item" : "none";
+    li.style.display = displayStyle;
+  }  
 });

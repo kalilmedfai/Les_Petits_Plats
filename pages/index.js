@@ -1,9 +1,9 @@
 function AfficherRecettes() {
 
   // Affiche les recettes
-  for (let i = 0; i < normalizedRecipes.length; i++) {
+  for (let i = 0; i < recipes.length; i++) {
     
-    const article = normalizedRecipes[i];
+    const article = recipes[i];
     // Récupération de l'élément du DOM qui accueillera les fiches
     const sectionRecipes = document.querySelector(".recipes-container");
     
@@ -174,18 +174,15 @@ for (let i = 0; i < buttons.length; i++) {
 
     refreshRecipes()
   });
-
+  
   // Événement de clic sur un tag
   tagsZone.addEventListener("click", function (event) {
-  const clickedTag = event.target;
+    const clickedTag = event.target;
   
-  // Vérification si l'élément cliqué est l'icône de fermeture dans le tag
-  if (clickedTag.tagName === "IMG" && clickedTag.getAttribute("src") === "assets/Logo/icons8-close-64.png") {
-    const tagElement = clickedTag.closest(".tag");
-    
-    if (tagElement) {
-      const tagText = tagElement.textContent;
-      const tagClass = tagElement.classList[1]; // Récupérer la deuxième classe du span
+    // Vérification si l'élément cliqué est une balise <span> (tag)
+    if (clickedTag.tagName === "SPAN") {
+      const tagText = clickedTag.textContent;
+      const tagClass = clickedTag.classList[1]; // Récupérer la deuxième classe du span
   
       // Vérifier la classe du tag pour le réinsérer dans la div correspondante
       if (tagClass === "ingredientTag") {
@@ -250,15 +247,14 @@ for (let i = 0; i < buttons.length; i++) {
         tagListItem.style.listStyleType = "none";
         ustensilsListTags.appendChild(tagListItem);
       }
-      
+  
       // Supprimer l'élément tag cliqué de tagsZone
-      tagElement.remove();
-      
-      // Appeler la fonction pour rafraîchir les recettes
-      refreshRecipes();
+      clickedTag.remove();
+
+      refreshRecipes()
     }
-  }
-});   
+  });
+   
   
 }
 
@@ -268,7 +264,7 @@ let allAppliances = [];
 let allUstensils = [];
 
 // Boucle pour extraire les ingrédients uniques des recettes
-for (const recipe of normalizedRecipes) {
+for (const recipe of recipes) {
   for (const ingredient of recipe.ingredients) {
     if (!allIngredients.includes(ingredient.ingredient)) {
       allIngredients.push(ingredient.ingredient);
@@ -277,7 +273,7 @@ for (const recipe of normalizedRecipes) {
 }
 
 // Boucle pour extraire les appareils uniques des recettes
-for (const recipe of normalizedRecipes) {
+for (const recipe of recipes) {
   const appliance = recipe.appliance;
   if (!allAppliances.includes(appliance)) {
     allAppliances.push(appliance);
@@ -285,7 +281,7 @@ for (const recipe of normalizedRecipes) {
 }
 
 // Boucle pour extraire les ustensiles uniques des recettes
-for (const recipe of normalizedRecipes) {
+for (const recipe of recipes) {
   for (const ustensil of recipe.ustensils) {
     if (!allUstensils.includes(ustensil)) {
       allUstensils.push(ustensil);
@@ -409,14 +405,14 @@ inputUstensils.addEventListener("input", function(event) {
 // fonction permettant de rafraîchir 
 function refreshRecipes() {
   const hasFilterCriterias = searchedValue || selectedIngredients.length || selectedUtensils.length || selectedApparels.length
-  
-    matchingRecipes = !hasFilterCriterias ? normalizedRecipes : normalizedRecipes.filter((recipe) =>
+
+    matchingRecipes = !hasFilterCriterias ? recipes : recipes.filter((recipe) =>
     { 
       return (
         (
           // si searchValue vide ou caractères inférieur à 3
           (searchedValue === '' || searchedValue.length < 3) ||
-            (searchedValue !== '' && (recipe.name.toLowerCase().includes(searchedValue) || recipe.description.toLowerCase().includes(searchedValue)))
+            (searchedValue !== '' && (recipe.name.includes(searchedValue) || recipe.description.includes(searchedValue)))
         ) &&
         (
           selectedIngredients.length === 0 ||
