@@ -93,7 +93,6 @@ for (let i = 0; i < buttons.length; i++) {
 }
 
 // Événement de clic sur un tag
-console.log("addEventListener")
 tagsZone.addEventListener("click", function (event) {
     event.stopPropagation()
     const clickedTag = event.target;

@@ -162,7 +162,6 @@ function refreshRecipes() {
   // Vérification si au moins un article est visible
   const anyVisibleArticle = Array.from(articles).some((article) => article.style.display !== "none"  );
 
-  console.log(anyVisibleArticle)
   // Affichage ou masquage des éléments d'erreur
   if (anyVisibleArticle) {
     errorArticles.style.display = "none";

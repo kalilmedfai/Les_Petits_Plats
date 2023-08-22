@@ -1755,5 +1755,3 @@ const normalizedRecipes = recipes.map((recipe)=>{
         ingredients:capitalizedIngredients
     }
 })
-
-console.log({recipes, normalizedRecipes})
