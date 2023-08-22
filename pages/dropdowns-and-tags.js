@@ -129,7 +129,7 @@ tagsZone.addEventListener("click", function (event) {
   
       refreshRecipes();
     }
-  });
+});
    
   /*
   // Événement de clic sur un tag
