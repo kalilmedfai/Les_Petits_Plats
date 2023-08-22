@@ -3,7 +3,7 @@ function AfficherRecettes() {
   const sectionRecipes = document.querySelector(".recipes-container");
 
   // Affiche les recettes
-  recipes.forEach(article => {
+  normalizedRecipes.forEach(article => {
     const articleElement = document.createElement("article");
     const divImage = document.createElement("div");
     divImage.setAttribute("class", "imgOfRecipe");

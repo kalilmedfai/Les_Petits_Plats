@@ -194,7 +194,7 @@ let allAppliances = [];
 let allUstensils = [];
 
 // Boucle pour extraire les ingrédients uniques des recettes
-recipes.forEach(recipe => {
+normalizedRecipes.forEach(recipe => {
   recipe.ingredients.forEach(ingredient => {
     if (!allIngredients.includes(ingredient.ingredient)) {
       allIngredients.push(ingredient.ingredient);
@@ -203,7 +203,7 @@ recipes.forEach(recipe => {
 });
 
 // Boucle pour extraire les appareils uniques des recettes
-recipes.forEach(recipe => {
+normalizedRecipes.forEach(recipe => {
   const appliance = recipe.appliance;
   if (!allAppliances.includes(appliance)) {
     allAppliances.push(appliance);
@@ -211,7 +211,7 @@ recipes.forEach(recipe => {
 });
 
 // Boucle pour extraire les ustensiles uniques des recettes
-recipes.forEach(recipe => {
+normalizedRecipes.forEach(recipe => {
   recipe.ustensils.forEach(ustensil => {
     if (!allUstensils.includes(ustensil)) {
       allUstensils.push(ustensil);
