@@ -13,84 +13,59 @@ let buttons = [ingredientsBtn, appareilsBtn, ustensilsBtn];
 // Déclaration de la variable tagsZone en dehors de la boucle for
 let tagsZone = document.querySelector(".tags-zone");
 
-// Boucle pour ajouter des écouteurs d'événements de clic à chaque bouton
-for (let i = 0; i < buttons.length; i++) {
-  let button = buttons[i];
-  let label = button.querySelector(".labelBtn");
-  let input = button.querySelector(".inputBtn");
-  let tagsList = button.querySelector(".listOfTags");
+buttons.forEach(button => {
+  const label = button.querySelector(".labelBtn");
+  const input = button.querySelector(".inputBtn");
+  const tagsList = button.querySelector(".listOfTags");
 
-  // Événement de clic sur le bouton
   button.addEventListener("click", function (event) {
     event.stopPropagation();
-    // Ajout de la classe "active" pour mettre en surbrillance le bouton
     button.classList.add("active");
-    // Masquer le texte du label
     label.style.display = "none";
-    // Afficher le champ de saisie
     input.style.display = "block";
     input.focus();
-    // Afficher la liste des balises
     tagsList.style.display = "grid";
-    // Définir la largeur du bouton
     button.style.width = "468px";
   });
 
-  // Événement de clic en dehors du bouton
   document.addEventListener("click", function (event) {
-    let isClickedInside = button.contains(event.target);
+    const isClickedInside = button.contains(event.target);
     if (!isClickedInside) {
-      // Supprimer la classe "active"
       button.classList.remove("active");
-      // Afficher le texte du label
       label.style.display = "block";
-      // Masquer le champ de saisie
       input.style.display = "none";
-      // Masquer la liste des balises
       tagsList.style.display = "none";
-      // Rétablir la largeur initiale du bouton
       button.style.width = "170px";
     }
   });
 
-  // Événement de clic sur un élément de la liste des balises
   tagsList.addEventListener("click", function (event) {
-    let clickedTag = event.target;
-    let tagName = clickedTag.textContent;
+    const clickedTag = event.target;
+    const tagName = clickedTag.textContent;
 
-    // Créer un élément de balise pour l'élément cliqué (tag)
-    let tagElement = document.createElement("span");
+    const tagElement = document.createElement("span");
     tagElement.textContent = tagName;
     tagElement.className = "tag";
-    const closeIcon = document.createElement("img")
+    const closeIcon = document.createElement("img");
     closeIcon.setAttribute("src", "assets/Logo/icons8-close-64.png");
-    tagElement.appendChild(closeIcon)
+    tagElement.appendChild(closeIcon);
 
-    // Ajouter la classe spécifique en fonction de la classe de la div parente
     if (tagsList.classList.contains("ingredientsListTags")) {
-      tagElement.classList.add("ingredientTag")
-      selectedIngredients.push(tagName) // ajouter ingrédient à la liste des ingrédients séléctionnés
-      console.log(selectedIngredients)
+      tagElement.classList.add("ingredientTag");
+      selectedIngredients.push(tagName);
     } else if (tagsList.classList.contains("appareilsListTags")) {
-      tagElement.classList.add("appareilTag")
-      selectedApparels.push(tagName) // ajouter appareil à la liste des appareils séléctionnés
-      console.log(selectedApparels)
+      tagElement.classList.add("appareilTag");
+      selectedApparels.push(tagName);
     } else if (tagsList.classList.contains("ustensilsListTags")) {
-      tagElement.classList.add("ustensilTag")
-      selectedUtensils.push(tagName) // ajouter ustensil à la liste des ustensils séléctionnés
-      console.log(selectedUtensils)
+      tagElement.classList.add("ustensilTag");
+      selectedUtensils.push(tagName);
     }
 
-    // Ajouter la balise à la section des tags
     tagsZone.appendChild(tagElement);
-
-
-    // Masquer l'élément cliqué dans listOfTags
-    clickedTag.remove()
-
-    refreshRecipes()
+    clickedTag.remove();
+    refreshRecipes();
   });
-}
+});
 
 // Événement de clic sur un tag
 tagsZone.addEventListener("click", function (event) {
@@ -219,38 +194,38 @@ let allAppliances = [];
 let allUstensils = [];
 
 // Boucle pour extraire les ingrédients uniques des recettes
-for (const recipe of recipes) {
-  for (const ingredient of recipe.ingredients) {
+recipes.forEach(recipe => {
+  recipe.ingredients.forEach(ingredient => {
     if (!allIngredients.includes(ingredient.ingredient)) {
       allIngredients.push(ingredient.ingredient);
     }
-  }
-}
+  });
+});
 
 // Boucle pour extraire les appareils uniques des recettes
-for (const recipe of recipes) {
+recipes.forEach(recipe => {
   const appliance = recipe.appliance;
   if (!allAppliances.includes(appliance)) {
     allAppliances.push(appliance);
   }
-}
+});
 
 // Boucle pour extraire les ustensiles uniques des recettes
-for (const recipe of recipes) {
-  for (const ustensil of recipe.ustensils) {
+recipes.forEach(recipe => {
+  recipe.ustensils.forEach(ustensil => {
     if (!allUstensils.includes(ustensil)) {
       allUstensils.push(ustensil);
     }
-  }
-}
+  });
+});
 
 const ingredientsTagsList = document.querySelector(".ingredientsListTags");
 const appareilsTagsList = document.querySelector(".appareilsListTags");
 const ustensilsTagsList = document.querySelector(".ustensilsListTags");
 
 function displayIngredients() {
-  // Boucle pour créer les balises d'ingrédients et les ajouter à la liste
-  for (let ingredient of allIngredients) {
+  // Utilisation de forEach pour afficher les balises d'ingrédients dans la liste
+  allIngredients.forEach(ingredient => {
     // Créez un élément de liste pour chaque ingrédient
     const li = document.createElement("li");
     li.textContent = ingredient;
@@ -258,12 +233,12 @@ function displayIngredients() {
 
     // Ajoutez l'élément de liste à la liste d'ingrédients
     ingredientsTagsList.appendChild(li);
-  }
+  });
 }
 
 function displayAppliances() {
-  // Boucle pour créer les balises d'appareils et les ajouter à la liste
-  for (let appliance of allAppliances) {
+  // Utilisation de forEach pour afficher les balises d'appareils dans la liste
+  allAppliances.forEach(appliance => {
     // Créez un élément de liste pour chaque appareil
     const li = document.createElement("li");
     li.textContent = appliance;
@@ -271,12 +246,12 @@ function displayAppliances() {
 
     // Ajoutez l'élément de liste à la liste d'appareils
     appareilsTagsList.appendChild(li);
-  }
+  });
 }
 
 function displayUstensils() {
-  // Boucle pour créer les balises d'ustensiles et les ajouter à la liste
-  for (let ustensil of allUstensils) {
+  // Utilisation de forEach pour afficher les balises d'ustensiles dans la liste
+  allUstensils.forEach(ustensil => {
     // Créez un élément de liste pour chaque ustensile
     const li = document.createElement("li");
     li.textContent = ustensil;
@@ -284,7 +259,7 @@ function displayUstensils() {
 
     // Ajoutez l'élément de liste à la liste d'ustensiles
     ustensilsTagsList.appendChild(li);
-  }
+  });
 }
 
 displayIngredients()
@@ -301,52 +276,46 @@ const inputUstensils = ustensilsBtn.querySelector("input");
 
 
 // Écouter l'événement "input" sur le champ de recherche d'ingrédients
-inputIngredients.addEventListener("input", function(event) {
+inputIngredients.addEventListener("input", function (event) {
   // Récupérer la valeur saisie dans le champ de recherche d'ingrédients
   const searchValue = event.target.value.toLowerCase();
-
   // Récupérer tous les éléments li dans ingredientsTagsList
   const liElements = ingredientsTagsList.querySelectorAll("li");
 
   // Parcourir tous les éléments li et les afficher ou les masquer en fonction de la correspondance avec la valeur de recherche
-  for (let i = 0; i < liElements.length; i++) {
-    const li = liElements[i];
+  liElements.forEach(li => {
     const ingredient = li.textContent.toLowerCase();
     const displayStyle = ingredient.startsWith(searchValue) ? "list-item" : "none";
     li.style.display = displayStyle;
-  }  
+  });
 });
 
 // Écouter l'événement "input" sur le champ de recherche d'appareils
-inputAppareils.addEventListener("input", function(event) {
+inputAppareils.addEventListener("input", function (event) {
   // Récupérer la valeur saisie dans le champ de recherche d'appareils
   const searchValue = event.target.value.toLowerCase();
-
   // Récupérer tous les éléments li dans appareilsTagsList
   const liElements = appareilsTagsList.querySelectorAll("li");
-  
+
   // Parcourir tous les éléments li et les afficher ou les masquer en fonction de la correspondance avec la valeur de recherche
-  for (let i = 0; i < liElements.length; i++) {
-    const li = liElements[i];
+  liElements.forEach(li => {
     const appareil = li.textContent.toLowerCase();
     const displayStyle = appareil.startsWith(searchValue) ? "list-item" : "none";
     li.style.display = displayStyle;
-  }  
+  });
 });
 
 // Écouter l'événement "input" sur le champ de recherche d'ustensiles
-inputUstensils.addEventListener("input", function(event) {
+inputUstensils.addEventListener("input", function (event) {
   // Récupérer la valeur saisie dans le champ de recherche d'ustensiles
   const searchValue = event.target.value.toLowerCase();
-
   // Récupérer tous les éléments li dans ustensilsTagsList
   const liElements = ustensilsTagsList.querySelectorAll("li");
 
   // Parcourir tous les éléments li et les afficher ou les masquer en fonction de la correspondance avec la valeur de recherche
-  for (let i = 0; i < liElements.length; i++) {
-    const li = liElements[i];
+  liElements.forEach(li => {
     const ustensil = li.textContent.toLowerCase();
     const displayStyle = ustensil.startsWith(searchValue) ? "list-item" : "none";
     li.style.display = displayStyle;
-  }  
+  });
 });
