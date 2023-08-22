@@ -1,9 +1,9 @@
 function AfficherRecettes() {
 
   // Affiche les recettes
-  for (let i = 0; i < recipes.length; i++) {
+  for (let i = 0; i < normalizedRecipes.length; i++) {
     
-    const article = recipes[i];
+    const article = normalizedRecipes[i];
     // Récupération de l'élément du DOM qui accueillera les fiches
     const sectionRecipes = document.querySelector(".recipes-container");
     

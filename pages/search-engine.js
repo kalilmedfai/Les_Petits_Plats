@@ -7,10 +7,10 @@ function refreshRecipes() {
   matchingRecipes = [];
 
   if (!hasFilterCriterias) {
-    matchingRecipes = recipes;
+    matchingRecipes = normalizedRecipes;
   } else {
-    for (let i = 0; i < recipes.length; i++) {
-      const recipe = recipes[i];
+    for (let i = 0; i < normalizedRecipes.length; i++) {
+      const recipe = normalizedRecipes[i];
 
       const nameDescriptionMatch = (searchedValue === '' || searchedValue.length < 3) ||
         (searchedValue !== '' && (recipe.name.includes(searchedValue) || recipe.description.includes(searchedValue)));
@@ -29,30 +29,7 @@ function refreshRecipes() {
       }
     }
   }
-  /*
-    matchingRecipes = !hasFilterCriterias ? recipes : recipes.filter((recipe) =>
-    { 
-      return (
-        (
-          // si searchValue vide ou caractères inférieur à 3
-          (searchedValue === '' || searchedValue.length < 3) ||
-            (searchedValue !== '' && (recipe.name.includes(searchedValue) || recipe.description.includes(searchedValue)))
-        ) &&
-        (
-          selectedIngredients.length === 0 ||
-            (selectedIngredients.length > 0 && recipe.ingredients.find( ingredient => selectedIngredients.includes(ingredient.ingredient)))
-        ) &&
-        (
-          selectedUtensils.length === 0 ||
-            (selectedUtensils.length > 0 && recipe.ustensils.find(ustensil => selectedUtensils.includes(ustensil))) 
-        ) &&
-        (
-          selectedApparels.length === 0 ||
-            (selectedApparels.length > 0 && selectedApparels.includes(recipe.appliance))
-        )
-      )
-    })
-  */
+
   // Créez des ensembles pour stocker les valeurs uniques
   const uniqueIngredients = new Set();
   const uniqueUstensils = new Set();

@@ -129,89 +129,6 @@ tagsZone.addEventListener("click", function (event) {
       refreshRecipes();
     }
 });
-   
-  /*
-  // Événement de clic sur un tag
-  tagsZone.addEventListener("click", function (event) {
-    const clickedTag = event.target;
-  
-    // Vérification si l'élément cliqué est une balise <span> (tag)
-    if (clickedTag.tagName === "SPAN") {
-      const tagText = clickedTag.textContent;
-      const tagClass = clickedTag.classList[1]; // Récupérer la deuxième classe du span
-  
-      // Vérifier la classe du tag pour le réinsérer dans la div correspondante
-      if (tagClass === "ingredientTag") {
-        const ingredientsListTags = document.querySelector(".ingredientsListTags");
-        const existingLi = ingredientsListTags.querySelector(`li.${tagClass}`);
-        if (existingLi) {
-          existingLi.style.display = "block";
-          existingLi.style.listStyleType = "none";
-          ingredientsListTags.removeChild(existingLi);
-          console.log(selectedIngredients)
-        }
-        // supprimer l'ingrédient de l'array selectedIngredients
-        for (let i = selectedIngredients.length - 1; i >= 0; i--) {
-          if (tagText === selectedIngredients[i]) {
-            selectedIngredients.splice(i, 1);
-          }
-        }
-        // recréer l'élément de la liste dans la liste des ingrédients
-        const tagListItem = document.createElement("li");
-        tagListItem.textContent = tagText;
-        tagListItem.style.display = "list-item";
-        tagListItem.style.listStyleType = "none";
-        ingredientsListTags.appendChild(tagListItem);
-      } else if (tagClass === "appareilTag") {
-        const appareilsListTags = document.querySelector(".appareilsListTags");
-        const existingLi = appareilsListTags.querySelector(`li.${tagClass}`);
-        if (existingLi) {
-          existingLi.style.display = "block";
-          existingLi.style.listStyleType = "none";
-          appareilsListTags.removeChild(existingLi);
-        }
-        // supprimer l'appareil de l'array selectedApparels
-        for (let i = selectedApparels.length - 1; i >= 0; i--) {
-          if (tagText === selectedApparels[i]) {
-            selectedApparels.splice(i, 1);
-          }
-        }
-        // recréer l'élément de la liste dans la liste des appareils
-        const tagListItem = document.createElement("li");
-        tagListItem.textContent = tagText;
-        tagListItem.style.display = "list-item";
-        tagListItem.style.listStyleType = "none";
-        appareilsListTags.appendChild(tagListItem);
-      } else if (tagClass === "ustensilTag") {
-        const ustensilsListTags = document.querySelector(".ustensilsListTags");
-        const existingLi = ustensilsListTags.querySelector(`li.${tagClass}`);
-        if (existingLi) {
-          existingLi.style.display = "block";
-          existingLi.style.listStyleType = "none";
-          ustensilsListTags.removeChild(existingLi);
-        }
-        // supprimer l'ustensil de l'array selectedUstensils
-        for (let i = selectedUtensils.length - 1; i >= 0; i--) {
-          if (tagText === selectedUtensils[i]) {
-            selectedUtensils.splice(i, 1);
-          }
-        }
-        // recréer l'élément de la liste dans la liste des ustensils
-        const tagListItem = document.createElement("li");
-        tagListItem.textContent = tagText;
-        tagListItem.style.display = "list-item";
-        tagListItem.style.listStyleType = "none";
-        ustensilsListTags.appendChild(tagListItem);
-      }
-  
-      // Supprimer l'élément tag cliqué de tagsZone
-      clickedTag.remove();
-
-      refreshRecipes()
-    }
-  });
-  */
-  
 
 // Tableaux pour stocker les ingrédients, les appareils et les ustensiles uniques
 let allIngredients = [];
@@ -219,7 +136,7 @@ let allAppliances = [];
 let allUstensils = [];
 
 // Boucle pour extraire les ingrédients uniques des recettes
-for (const recipe of recipes) {
+for (const recipe of normalizedRecipes) {
   for (const ingredient of recipe.ingredients) {
     if (!allIngredients.includes(ingredient.ingredient)) {
       allIngredients.push(ingredient.ingredient);
@@ -228,7 +145,7 @@ for (const recipe of recipes) {
 }
 
 // Boucle pour extraire les appareils uniques des recettes
-for (const recipe of recipes) {
+for (const recipe of normalizedRecipes) {
   const appliance = recipe.appliance;
   if (!allAppliances.includes(appliance)) {
     allAppliances.push(appliance);
@@ -236,7 +153,7 @@ for (const recipe of recipes) {
 }
 
 // Boucle pour extraire les ustensiles uniques des recettes
-for (const recipe of recipes) {
+for (const recipe of normalizedRecipes) {
   for (const ustensil of recipe.ustensils) {
     if (!allUstensils.includes(ustensil)) {
       allUstensils.push(ustensil);
